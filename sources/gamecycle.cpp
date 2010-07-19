@@ -1297,7 +1297,6 @@ void GameCycle(BYTE *screen,int dx,int dy)
                 for (int i = 0; i < NUM_SELECTABLE_SPECIAL_ITEMS; i++) {
                     if (item[selectable_special_items[i]]) {
                         current_special_item = i;
-                        printf("current_special_item=%d\n", current_special_item);
                         break;
                     }
                 }
