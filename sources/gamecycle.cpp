@@ -1351,7 +1351,13 @@ void GameCycle(BYTE *screen,int dx,int dy)
                     Sound_play(S_select);
                     break;
                 }
-            }
+                /* the line below prevents the character from immediately 
+                 * using the sword if the activation of the item returns to the
+                 * game. For example, if you activate the dagger and has got
+                 * the harp, all the bats in the screen AND the rocks would be
+                 * destroyed simultaneously, which is not desired. */
+                keyboard[SWORD_KEY]=false;
+            }            
 #endif 
 
 			if (current_weapon==-1) {
