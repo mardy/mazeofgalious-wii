@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app version="0.63.1">
+  <name>Maze of Galious Wii</name>
+  <coder>Moreira</coder>
+  <version>0.63.1</version>
+  <release_date>20100714</release_date>
+  <short_description>A remake of the MSX classic: Maze of Galious</short_description> 
+  <long_description>
+Maze of Galious was an MSX game released in 1987 by Konami. In 2002, a remake of this game has been released by the Brain Games team:
+
+http://www.braingames.getput.com/roadf/default.asp
+
+This remake is written in SDL, and is not ported to Wii. Credits for the original team:
+
+Coding: Santi Ontañón, Jorrith Schaap
+Graphics: Santi Ontañón, Boltian, Hinox, MP83, Naramura
+Music/SFX: Rob Powelse, Jorrith Schaap, Bart Roijmans, Wolf_, Randy Wintjes
+Maps: Santi Ontañón
+Beta Testing: Koiote, Henk Bosman, Patrick van Arkelm, Wisam al-Rawi, Max Attar Feingold, Sergi Garcia Besora, Zita Miranda Martinez, Menno Haeck, Janne Vieri
+</long_description> 
+</app>
