@@ -111,6 +111,7 @@ int current_weapon=-1;	/* arma seleccionada */
 int current_special_item=-1;
 int selectable_special_items[NUM_SELECTABLE_SPECIAL_ITEMS]={8,19,24,26};
 SDLKey key_to_dispatch=SDLK_UNKNOWN;
+SDLKey key_dispatched=SDLK_UNKNOWN;
 char *bat_kill_cheat = "umbrella";
 #endif 
 int n_fired_arrows=0;	/* N de flechas activas	*/ 
@@ -604,7 +605,8 @@ void GameCycle(BYTE *screen,int dx,int dy)
 #ifdef GAMEPAD_ONLY
     if (key_to_dispatch != SDLK_UNKNOWN) {
         keyboard[key_to_dispatch]=1;
-        key_to_dispatch=SDLK_UNKNOWN;
+        key_dispatched=key_to_dispatch;
+        key_to_dispatch=SDLK_UNKNOWN;        
     }
 #endif
 
@@ -2744,8 +2746,13 @@ void GameCycle(BYTE *screen,int dx,int dy)
 
 	/* Viejo estado del teclado: */ 
 	for(int i=0;i<SDLK_LAST;i++) old_keyboard[i]=keyboard[i];
-
-	cycle++;
+#ifdef GAMEPAD_ONLY
+    if (key_dispatched != SDLK_UNKNOWN) {
+        keyboard[key_dispatched]=0;        
+        key_dispatched=SDLK_UNKNOWN;        
+    }
+#endif
+    cycle++;
 } /* GameCycle */ 
 
 
