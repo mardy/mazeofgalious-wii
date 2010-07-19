@@ -22,7 +22,7 @@ include $(DEVKITPPC)/wii_rules
 #---------------------------------------------------------------------------------
 TARGET		:=	$(notdir $(CURDIR))
 BUILD		:=	build
-SOURCES		:=	src
+SOURCES		:=	sources
 DATA		:=
 TEXTURES	:=	textures
 INCLUDES	:=	
@@ -31,7 +31,7 @@ INCLUDES	:=
 # options for code generation
 #---------------------------------------------------------------------------------
 
-CFLAGS		=	-g -O2 -Wall $(MACHDEP) $(INCLUDE) -D_WII
+CFLAGS		=	-g -O2 -Wall -Wno-write-strings $(MACHDEP) $(INCLUDE) -DGAMEPAD_ONLY -D_WII
 CXXFLAGS	=	$(CFLAGS)
 
 LDFLAGS	=	-g $(MACHDEP) -Wl,-Map,$(notdir $@).map
@@ -39,7 +39,7 @@ LDFLAGS	=	-g $(MACHDEP) -Wl,-Map,$(notdir $@).map
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
-LIBS	:=	-lSDL_ttf -lSDL_gfx -lSDL_mixer -lvorbisidec -lsmpeg -lSDL_image -ljpeg -lpng -lz -lSDL -lSDL_net -lfreetype -lfat -lwiiuse -lwiikeyboard -lbte -logc -lm 
+LIBS	:=	-lSDL_ttf -lSDL_gfx -lSDL_mixer -lsmpeg -lSDL_image -ljpeg -lpng -lz -lSDL -lSDL_net -lfreetype -lvorbisidec -lfat -lwiiuse -lwiikeyboard -lbte -logc -lm 
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
