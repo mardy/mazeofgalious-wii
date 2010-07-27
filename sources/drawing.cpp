@@ -413,22 +413,22 @@ void B_rectangle(BYTE *screen,int x,int y,int dx,int dy,int pitch,BYTE color)
 
     if (!screen) {
         output_debug_message("[B_rectangle] assertion failure #1\n");
-        output_debug_message("params = (screen=%p,x=%d,y=%d,dx=%d,dy=%d,pitch=%d,color=%d)",
+        output_debug_message("params = (screen=%p,x=%d,y=%d,dx=%d,dy=%d,pitch=%d,color=%d)\n",
                          screen,x,y,dx,dy,pitch,color);
     }
-    if (x+dx >= SCREEN_X) {
+    if (x+dx > SCREEN_X) {
         output_debug_message("[B_rectangle] assertion failure #2\n");
-        output_debug_message("params = (screen=%p,x=%d,y=%d,dx=%d,dy=%d,pitch=%d,color=%d)",
+        output_debug_message("params = (screen=%p,x=%d,y=%d,dx=%d,dy=%d,pitch=%d,color=%d)\n",
                          screen,x,y,dx,dy,pitch,color);
     }
-    if (y+dy >= SCREEN_Y) {
+    if (y+dy > SCREEN_Y) {
         output_debug_message("[B_rectangle] assertion failure #3\n");
-        output_debug_message("params = (screen=%p,x=%d,y=%d,dx=%d,dy=%d,pitch=%d,color=%d)",
+        output_debug_message("params = (screen=%p,x=%d,y=%d,dx=%d,dy=%d,pitch=%d,color=%d)\n",
                          screen,x,y,dx,dy,pitch,color);
     }
     if (color > 255) {
         output_debug_message("[B_rectangle] assertion failure #4\n");
-        output_debug_message("params = (screen=%p,x=%d,y=%d,dx=%d,dy=%d,pitch=%d,color=%d)",
+        output_debug_message("params = (screen=%p,x=%d,y=%d,dx=%d,dy=%d,pitch=%d,color=%d)\n",
                          screen,x,y,dx,dy,pitch,color);
     }
 	for(i=0;i<dy;i++) {
