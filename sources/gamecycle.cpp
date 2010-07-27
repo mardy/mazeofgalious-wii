@@ -1108,8 +1108,8 @@ void GameCycle(BYTE *screen,int dx,int dy)
 				} /* for */ 
 			} /* if */ 
 
-			if (world_item[map-1][3]) {
-				/* Dibujar mapa: */ 
+			if (map > 0 && world_item[map-1][3]) {
+				/* Dibujar mapa: */
 				tile_print("MAP",6*TILE_SIZE_X+GAME_VIEW_X,GAME_VIEW_Y+13*TILE_SIZE_Y,screen,dx,dy);
 				draw_items_map(map,map_x,map_y,(((SUBSTATE>>2)&0x01)==0 ? true:false),screen,dx,dy);
 			} /* if */ 
@@ -1334,7 +1334,7 @@ void GameCycle(BYTE *screen,int dx,int dy)
                 /* Activating the dagger - Corresponds to typing the "UMBRELLA"
                  * keyword in game */                    
                 case 24:                
-                    for (int i = 0; i < strlen(bat_kill_cheat); i++) {
+                    for (unsigned int i = 0; i < strlen(bat_kill_cheat); i++) {
                         type_virtual_key((SDLKey)bat_kill_cheat[i]);
                     }
                     /* Back to ingame */
