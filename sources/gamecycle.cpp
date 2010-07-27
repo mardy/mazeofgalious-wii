@@ -1327,7 +1327,8 @@ void GameCycle(BYTE *screen,int dx,int dy)
 			} /* if */ 
             
 #ifdef GAMEPAD_ONLY
-            if (currently_selecting == 2 && !old_keyboard[SWORD_KEY] && keyboard[SWORD_KEY]) {
+            if (currently_selecting == 2 && !old_keyboard[SWORD_KEY] && keyboard[SWORD_KEY]) {                
+                old_keyboard[SWORD_KEY]=true; // prevents 'double button-press' bug
                 /* Handle activation of special items via D-pad navigation */
                 switch (selectable_special_items[current_special_item]) {
                 /* Activating the angel halo - Corresponds to pressing the RETURN key */
@@ -1370,13 +1371,7 @@ void GameCycle(BYTE *screen,int dx,int dy)
                     Sound_play(S_select);
                     break;
                 }
-                /* the line below prevents the character from immediately 
-                 * using the sword if the activation of the item returns to the
-                 * game. For example, if you activate the dagger and has got
-                 * the harp, all the bats in the screen AND the rocks would be
-                 * destroyed simultaneously, which is not desired. */
-                keyboard[SWORD_KEY]=false;
-            }            
+            }
 #endif 
 
 			if (current_weapon==-1) {
@@ -2687,9 +2682,17 @@ void GameCycle(BYTE *screen,int dx,int dy)
             int num_world_doors_opened=0;
             memset(screen,0,dx*dy);
             tile_print("CHOOSE YOUR DESTINATION",TILE_SIZE_X*8,TILE_SIZE_Y*2,screen,dx,dy);
-            for (int i = 0; i < 10; i++) {
-                if (!world_doors_open[i]) {
-                    num_world_doors_opened = i;
+            if (world_doors_open[9]) {
+                num_world_doors_opened=9; /* Cannot allow the player to warp
+                                             to world 10's entrance - even if 
+                                             the door to there has already been
+                                             opened. */
+            } else {
+                /* Find the highest world's entrance opened. */
+                for (int i = 0; i < 10; i++) {
+                    if (!world_doors_open[i]) {
+                        num_world_doors_opened = i;
+                    }
                 }
             }
             for (int i = 0; i < num_world_doors_opened; i++) {
