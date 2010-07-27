@@ -1233,7 +1233,7 @@ void GameCycle(BYTE *screen,int dx,int dy)
                     if (keyboard[RIGHT_KEY]) {
                         for (int i = 0; i < NUM_SELECTABLE_SPECIAL_ITEMS; i++) {
                             current_special_item++;
-                            if (current_special_item > NUM_SELECTABLE_SPECIAL_ITEMS) {
+                            if (current_special_item >= NUM_SELECTABLE_SPECIAL_ITEMS) {
                                 current_special_item = 0;
                             }
                             if (item[selectable_special_items[current_special_item]]) {
@@ -1258,7 +1258,9 @@ void GameCycle(BYTE *screen,int dx,int dy)
 			} /* if */
 
 			if (!old_keyboard[UP_KEY] && !old_keyboard[DOWN_KEY] &&
+#ifndef GAMEPAD_ONLY
 				current_weapon!=-1 &&
+#endif
 				(keyboard[UP_KEY] || keyboard[DOWN_KEY])) {
 				Sound_play(S_select);
 #ifndef GAMEPAD_ONLY
@@ -1269,7 +1271,13 @@ void GameCycle(BYTE *screen,int dx,int dy)
                 if (keyboard[UP_KEY]) {
                     switch(currently_selecting) {
                     case 0: /* characters - go to weapons */
-                        currently_selecting=1;
+                        if (current_weapon != -1) {
+                            currently_selecting=1;
+                        } else {
+                            /* no weapons? - go to special items (attempt) */
+                            currently_selecting=2;
+                            current_special_item = -1;                             
+                        }
                         break;
                     case 1: /* weapons - go to special items (attempt) */
                         currently_selecting=2;
@@ -1289,7 +1297,12 @@ void GameCycle(BYTE *screen,int dx,int dy)
                         currently_selecting=0;
                         break;
                     case 2: /* special items - go to weapons */
-                        currently_selecting=1;
+                        if (current_weapon != -1) {
+                            currently_selecting=1;
+                        } else {
+                            /* no weapons? - go to characters */
+                            currently_selecting=0;                            
+                        }
                         break;
                     }                    
                 }
@@ -1301,9 +1314,14 @@ void GameCycle(BYTE *screen,int dx,int dy)
                     }
                 }
                 /* No selectable special item was collected */
-                if (current_special_item == -1) {
-                    /* Skip special item's option - and  go to opposite option */                                        
-                    currently_selecting=!previously_selecting;
+                if (current_special_item == -1) {                    
+                    if (current_weapon != -1) {
+                        /* Skip special item's option - and  go to opposite option */                                      
+                        currently_selecting=!previously_selecting;
+                    } else {
+                        /* No weapon was collected - go to characters */
+                        currently_selecting=0;
+                    }
                 }
 #endif
 			} /* if */ 
@@ -1569,7 +1587,6 @@ void GameCycle(BYTE *screen,int dx,int dy)
 				if (map!=0) Sound_play(S_gamestart);
 			} /* if */ 
 
-			memset(screen,0,dx*dy);
 			memset(screen,0,dx*dy);
 			memset(col_buffer,0,dx*dy);	
 
@@ -2622,7 +2639,7 @@ void GameCycle(BYTE *screen,int dx,int dy)
 					"    ORIGINALLY AT  1987",
 					"",
 					"    REMAKE PRESENTED BY ",
-					"   SANTI ONTAON AT 2002",                    
+					"   SANTI ONTAÑON AT 2002",                    
                     "",
                     "   WII PORT BY ALEXANDRE",
                     "   MOREIRA AT 2010"};
