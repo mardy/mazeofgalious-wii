@@ -143,7 +143,7 @@ extern int lever_going_to[MAX_LEVERS];
 /* Efectos de sonido: */ 
 extern SOUNDT S_gamestart,S_jump,S_sword,S_swordhit;
 extern SOUNDT S_item,S_ah,S_ah2,S_powerup,S_ladderdisapear;
-extern SOUNDT S_death,S_entering;
+extern SOUNDT S_death;
 extern SOUNDT S_enterwater;
 extern SOUNDT S_waterhit,S_fall,S_shield,S_bell,S_lavahit;
 extern SOUNDT S_bible;
@@ -362,7 +362,7 @@ extern int worm_state_y[28];
 	} /* for */ 
 
 /*
-extern SOUNDT S_pause,S_death,S_gameover,S_worldkey,S_entering;
+extern SOUNDT S_pause,S_death,S_gameover;
 extern SOUNDT S_gamestart,S_jump,S_sword,S_swordhit;
 extern SOUNDT S_item,S_ah,S_ah2,S_powerup,S_enemyhit,S_door;
 extern SOUNDT S_enemykill,S_ladderdisapear,S_armourhit;

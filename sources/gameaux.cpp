@@ -165,7 +165,7 @@ extern int HP_obj_aux[HP_OBJS_MAX];
 extern unsigned char old_keyboard[SDLK_LAST];
 
 /* Efectos de sonido: */ 
-extern SOUNDT S_pause,S_death,S_gameover,S_worldkey,S_entering;
+extern SOUNDT S_pause,S_death,S_gameover;
 extern SOUNDT S_gamestart,S_jump,S_sword,S_swordhit;
 extern SOUNDT S_item,S_ah,S_ah2,S_powerup,S_enemyhit,S_door;
 extern SOUNDT S_enemykill,S_ladderdisapear,S_armourhit;
@@ -256,9 +256,7 @@ void SetSFXVolume(int volume)
 		myMix_VolumeChunk(S_armourhit,volume);
 		myMix_VolumeChunk(S_pause,volume);
 		myMix_VolumeChunk(S_death,volume);
-		myMix_VolumeChunk(S_gameover,volume);
-		myMix_VolumeChunk(S_worldkey,volume);
-		myMix_VolumeChunk(S_entering,volume);
+		myMix_VolumeChunk(S_gameover,volume);		
 		myMix_VolumeChunk(S_enterwater,volume);
 		myMix_VolumeChunk(S_select,volume);
 		myMix_VolumeChunk(S_firearrow,volume);
@@ -330,9 +328,7 @@ void ReleaseSound(bool definitive)
 	Delete_sound(S_armourhit);
 	Delete_sound(S_pause);
 	Delete_sound(S_death);
-	Delete_sound(S_gameover);
-	Delete_sound(S_worldkey);
-	Delete_sound(S_entering);
+	Delete_sound(S_gameover);	
 	Delete_sound(S_enterwater);
 	Delete_sound(S_select);
 	Delete_sound(S_firearrow);
@@ -3122,9 +3118,7 @@ void ReloadSound(void)
 	S_armourhit=Sound_create_sound("sword_armour",0); 
 	S_pause=Sound_create_sound("pause",0); 
 	S_death=Sound_create_sound("death",0); 
-	S_gameover=Sound_create_sound("game_over",0); 
-	S_worldkey=Sound_create_sound("worldkey",0); 
-	S_entering=Sound_create_sound("entering",0); 
+	S_gameover=Sound_create_sound("game_over",0);	 
 	S_enterwater=Sound_create_sound("enterwater",0); 
 	S_select=Sound_create_sound("select",0); 
 	S_firearrow=Sound_create_sound("firearrow",0); 

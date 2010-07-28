@@ -117,7 +117,7 @@ extern int lever_going_to[MAX_LEVERS];
 /* Efectos de sonido: */ 
 extern SOUNDT S_gamestart,S_jump,S_sword,S_swordhit;
 extern SOUNDT S_item,S_ah,S_ah2,S_powerup,S_ladderdisapear;
-extern SOUNDT S_death,S_entering;
+extern SOUNDT S_death;
 extern SOUNDT S_enterwater;
 extern SOUNDT S_waterhit,S_fall,S_shield,S_bell,S_lavahit;
 extern SOUNDT S_bible;
@@ -2070,7 +2070,9 @@ void GameInGameCycle(int dx,int dy)
 		case S_ENTERING_WORLD:
 				if (pers_substate==0) {
 					Sound_release_music();
-					Sound_play(S_entering);
+					char tmp[80];
+                    sprintf(tmp,"entering");
+                    Sound_create_music(tmp,0,0);
 				} /* if */ 
 				pers_substate++;
 				if (in_door>=0) {

@@ -294,7 +294,7 @@ int HP_obj_aux[HP_OBJS_MAX];
 
 
 /* Efectos de sonido: */ 
-SOUNDT S_pause=0,S_death=0,S_gameover=0,S_worldkey=0,S_entering=0;
+SOUNDT S_pause=0,S_death=0,S_gameover=0;
 SOUNDT S_gamestart=0,S_jump=0,S_sword=0,S_swordhit=0;
 SOUNDT S_item=0,S_ah=0,S_ah2=0,S_powerup=0,S_enemyhit=0,S_door=0;
 SOUNDT S_enemykill=0,S_ladderdisapear=0,S_armourhit=0;
