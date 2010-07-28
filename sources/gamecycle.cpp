@@ -109,7 +109,7 @@ int current_weapon=-1;	/* arma seleccionada */
 #ifdef GAMEPAD_ONLY
 #define NUM_SELECTABLE_SPECIAL_ITEMS 4
 int current_special_item=-1;
-int selectable_special_items[NUM_SELECTABLE_SPECIAL_ITEMS]={8,19,24,26};
+int selectable_special_items[NUM_SELECTABLE_SPECIAL_ITEMS]={8,19,25,26};
 SDLKey key_to_dispatch=SDLK_UNKNOWN;
 SDLKey key_dispatched=SDLK_UNKNOWN;
 char *bat_kill_cheat = "umbrella";
@@ -1352,7 +1352,7 @@ void GameCycle(BYTE *screen,int dx,int dy)
                     break;
                 /* Activating the dagger - Corresponds to typing the "UMBRELLA"
                  * keyword in game */                    
-                case 24:                
+                case 25:                
                     for (unsigned int i = 0; i < strlen(bat_kill_cheat); i++) {
                         type_virtual_key((SDLKey)bat_kill_cheat[i]);
                     }
