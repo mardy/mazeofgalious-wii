@@ -2634,7 +2634,7 @@ void GameCycle(BYTE *screen,int dx,int dy)
 					"    ORIGINALLY AT  1987",
 					"",
 					"    REMAKE PRESENTED BY ",
-					"   SANTI ONTAÑON AT 2002",                    
+					"   SANTI ONTA-ON AT 2002",                    
                     "",
                     "   WII PORT BY ALEXANDRE",
                     "   MOREIRA AT 2010"};
