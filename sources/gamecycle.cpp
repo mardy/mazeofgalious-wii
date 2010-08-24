@@ -64,6 +64,9 @@ extern char *g_path;
 extern char **s_paths;
 extern int n_s_paths,act_s_path;
 extern char *s_path;
+#ifdef GAMEPAD_ONLY
+extern int sel_g_path, sel_s_path;
+#endif
 
 /* Grficos: */ 
 Bitmap *konami_bmp=0,*menu_bmp=0,*tiles_bmp=0,*tiles2_bmp=0,*enemy_bmp=0,*enemy2_bmp=0,*final_bmp=0;
@@ -323,6 +326,9 @@ int zoom=640;
 
 /* Teclas: */ 
 SDLKey UP_KEY=SDLK_q,DOWN_KEY=SDLK_a,LEFT_KEY=SDLK_o,RIGHT_KEY=SDLK_p;
+#ifdef GAMEPAD_ONLY
+SDLKey JUMP_KEY=SDLK_z;
+#endif
 SDLKey SWORD_KEY=SDLK_SPACE,WEAPON_KEY=SDLK_m,ITEM_KEY=SDLK_F1,PAUSE_KEY=SDLK_F2;
 SDLKey last_word[16];
 
@@ -416,83 +422,146 @@ void UpdateMainMenu(BYTE *screen,int dx,int dy,unsigned char *keyboard)
 {
     char tmp[256];
     FILE *fp;
-        
-    tiles[armas_tile]->draw(TILE_SIZE_X*11,TILE_SIZE_Y*(18+main_menu_option),
+	if (main_menu_option != 2) sel_g_path = act_g_path;
+	if (main_menu_option != 3) sel_s_path = act_s_path;
+
+    tiles[armas_tile]->draw(TILE_SIZE_X*10,TILE_SIZE_Y*(18+main_menu_option),
                             screen,col_buffer,dx,dy,dx);    
-    tile_print(" NEW GAME",TILE_SIZE_X*13,TILE_SIZE_Y*18,screen,dx,dy);
-    if (main_menu_option == 0) {
-        sprintf(tmp,"LOAD GAME");
-    } else {
-        sprintf(tmp,"LOAD GAME [%d]",main_menu_load_slot);
-    }    
-    tile_print(tmp,TILE_SIZE_X*13,TILE_SIZE_Y*19,screen,dx,dy);
+    tile_print("  NEW GAME",TILE_SIZE_X*13,TILE_SIZE_Y*18,screen,dx,dy);
     if (main_menu_option == 1) {
-        tile_print("[LEFT\\RIGHT CHANGE SLOT]",TILE_SIZE_X*7,TILE_SIZE_Y*(20.5),screen,dx,dy);
+        sprintf(tmp," LOAD GAME [%d]",main_menu_load_slot);
+    } else {
+        sprintf(tmp," LOAD GAME");
     }
-    sprintf(tmp,MSG_CHANGE_GFX_SET "%s",g_path+9+strlen(ROOTDIR_PREFIX));
-    tmp[strlen(tmp)-1]=0;
-    strupr(tmp);
-    tile_print(tmp,TILE_SIZE_X*2,TILE_SIZE_Y*22,screen,dx,dy);
-    sprintf(tmp,MSG_CHANGE_SND_SET "%s",s_path+6+strlen(ROOTDIR_PREFIX));
-    strupr(tmp);
-    tmp[strlen(tmp)-1]=0;
-    tile_print(tmp,TILE_SIZE_X*2,TILE_SIZE_Y*23,screen,dx,dy);    
+    tile_print(tmp,TILE_SIZE_X*13,TILE_SIZE_Y*19,screen,dx,dy);
+	if (main_menu_option == 2) {
+		sprintf(tmp, "GRAPHIC SET: %s", g_paths[sel_g_path]+9+strlen(ROOTDIR_PREFIX));
+		tmp[strlen(tmp)-1] = 0;
+		strupr(tmp);
+	}
+	else {
+		sprintf(tmp, "GRAPHIC SET");
+	}
+	tile_print(tmp, TILE_SIZE_X*13, TILE_SIZE_Y*20, screen, dx, dy);
+	if (main_menu_option == 3) {
+		sprintf(tmp, " SOUND SET: %s", s_paths[sel_s_path]+6+strlen(ROOTDIR_PREFIX));
+		tmp[strlen(tmp)-1] = 0;
+		strupr(tmp);
+	}
+	else {
+		sprintf(tmp, " SOUND SET");
+	}
+	tile_print(tmp, TILE_SIZE_X*13, TILE_SIZE_Y*21, screen, dx, dy);
+	switch (main_menu_option) {
+		case 1:		tile_print("LEFT\\RIGHT CHANGE SAVE SLOT", TILE_SIZE_X*6, TILE_SIZE_Y*23, screen, dx, dy);
+					break;
+		case 2:
+		case 3:		tile_print("  LEFT\\RIGHT:  CHANGE SET", TILE_SIZE_X*6, TILE_SIZE_Y*23, screen, dx, dy);
+					tile_print("  SWORD BUTTON: APPLY SET", TILE_SIZE_X*6, TILE_SIZE_Y*24, screen, dx, dy);
+					break;
+	}
+
     if (keyboard[SDLK_SPACE]  && !old_keyboard[SDLK_SPACE]) {
-        if (main_menu_option == 0) { // NEW GAME
-            developer_start_x=-1;
-            developer_start_y=-1;
-            developer_start_map=-1;
-            strcpy(password,"UR3FUR3FUR4F423RUR3FUR3FUR3FUR3FUR3FUR3FURS48");
-            STATE=3;
-            SUBSTATE=0;
-        } else { // LOAD GAME
-            sprintf(tmp,"sgame%.2i.txt",main_menu_load_slot);
-            fp=f1open(tmp,"r",USERDATA);
-            if (fp!=0) {
-                int i;
-                for(i=0;i<48;i++) {
-                    password[i]=fgetc(fp);
-                } /* for */ 
-                fclose(fp);                
-                if (readpassword(password)) {                    
-                    developer_start_x=-1;
-                    developer_start_y=-1;
-                    developer_start_map=-1;                                        
-                    STATE=3;
-                    SUBSTATE=0;
-                    Sound_play(S_select);                    
-                }
-            } 
-            if (STATE != 3) { // Slot file does not exist or contains an invalid password                
-                Sound_play(S_nocoins);
-            } /* if */
+		switch (main_menu_option) {
+			case 0:		// NEW GAME
+				developer_start_x=-1;
+				developer_start_y=-1;
+				developer_start_map=-1;
+				strcpy(password,"UR3FUR3FUR4F423RUR3FUR3FUR3FUR3FUR3FUR3FURS48");
+				STATE=3;
+				SUBSTATE=0;
+				break;
+
+			case 1:		// LOAD GAME
+				sprintf(tmp,"sgame%.2i.txt",main_menu_load_slot);
+				fp=f1open(tmp,"r",USERDATA);
+				if (fp!=0) {
+					int i;
+					for(i=0;i<48;i++) {
+						password[i]=fgetc(fp);
+					} /* for */ 
+					fclose(fp);                
+					if (readpassword(password)) {                    
+						developer_start_x=-1;
+						developer_start_y=-1;
+						developer_start_map=-1;                                        
+						STATE=3;
+						SUBSTATE=0;
+						Sound_play(S_select);                    
+					}
+				}
+				if (STATE != 3) { // Slot file does not exist or contains an invalid password                
+					Sound_play(S_nocoins);
+				} /* if */
+				break;
+
+			case 2:		// CHANGE GFX SET
+				SDL_Event F10;
+				F10.type = SDL_KEYDOWN;
+				F10.key.keysym.sym = SDLK_F10;
+				SDL_PushEvent(&F10);
+				break;
+
+			case 3:		// CHANGE SOUND SET
+				SDL_Event F11;
+				F11.type = SDL_KEYDOWN;
+				F11.key.keysym.sym = SDLK_F11;
+				SDL_PushEvent(&F11);
+				break;
         }
     } /* if */ 
+
     if (keyboard[DOWN_KEY] && !old_keyboard[DOWN_KEY]) {
         SUBSTATE=0; // Reset timer to display the story
-        if (main_menu_option == 0) {
-            main_menu_option=1;
+		if (main_menu_option < 3) {
+            main_menu_option++;
             Sound_play(S_select);
         }
     } /* if */ 
     if (keyboard[UP_KEY] && !old_keyboard[UP_KEY]) {
         SUBSTATE=0; // Reset timer to display the story
-        if (main_menu_option == 1) {
-            main_menu_option=0;
+        if (main_menu_option > 0) {
+            main_menu_option--;
             Sound_play(S_select);
         }
     } /* if */
+
     if (keyboard[LEFT_KEY] && !old_keyboard[LEFT_KEY]) {
-        if (main_menu_load_slot > 1)
-            main_menu_load_slot--;
+		switch (main_menu_option) {
+			case 1:
+				if (main_menu_load_slot > 1)
+					main_menu_load_slot--;
+				break;
+			case 2:
+				if (sel_g_path > 0)
+					sel_g_path--;
+				break;
+			case 3:
+				if (sel_s_path > 0)
+					sel_s_path--;
+				break;
+		}
     }
     if (keyboard[RIGHT_KEY] && !old_keyboard[RIGHT_KEY]) {
-        if (main_menu_load_slot < 5)
-            main_menu_load_slot++;
+		switch (main_menu_option) {
+			case 1:
+				if (main_menu_load_slot < 5)
+					main_menu_load_slot++;
+				break;
+			case 2:
+				if (sel_g_path+1 < n_g_paths)
+					sel_g_path++;
+				break;
+			case 3:
+				if (sel_s_path+1 < n_s_paths)
+					sel_s_path++;
+				break;
+		}
     }
 }
 #endif
 
+#ifndef GAMEPAD_ONLY
 void OptionsMenuScreen(BYTE *screen,int dx,int dy,unsigned char *keyboard) 
 {
     char tmp[80];
@@ -543,6 +612,101 @@ void OptionsMenuScreen(BYTE *screen,int dx,int dy,unsigned char *keyboard)
         SetSFXVolume(sfx_volume);
     } /* if */
 }
+#else
+void OptionsMenuScreen(BYTE *screen,int dx,int dy,unsigned char *keyboard) 
+{
+    char tmp[256];
+    char *letter[15]={"A","B","C","D","E", "F","G","H","I","J", "K","L","M","N","O"};
+	if (MENUOPTION != 3) sel_g_path = act_g_path;
+	if (MENUOPTION != 4) sel_s_path = act_s_path;
+
+    memset(screen,0,dx*dy);
+    B_rectangle(screen,TILE_SIZE_X*4,TILE_SIZE_Y*5+MENUOPTION*TILE_SIZE_Y*2,
+                       TILE_SIZE_X*31,TILE_SIZE_Y,dx,47);
+    tile_print("OPTIONS MENU",TILE_SIZE_X*14,TILE_SIZE_Y*2,screen,dx,dy);
+    tile_print("QUIT GAME",TILE_SIZE_X*15,TILE_SIZE_Y*5,screen,dx,dy);
+    sprintf(tmp,"MUSIC VOLUME: %.3i",(100*music_volume)/127);
+    tile_print(tmp,TILE_SIZE_X*11,TILE_SIZE_Y*7,screen,dx,dy);
+    sprintf(tmp,"SFX VOLUME: %.3i",(100*sfx_volume)/127);
+    tile_print(tmp,TILE_SIZE_X*12,TILE_SIZE_Y*9,screen,dx,dy);
+	sprintf(tmp, "GRAPHIC SET: %s", g_paths[sel_g_path]+9+strlen(ROOTDIR_PREFIX));
+	tmp[strlen(tmp)-1] = 0;
+	strupr(tmp);
+    tile_print(tmp,TILE_SIZE_X*11,TILE_SIZE_Y*11,screen,dx,dy);
+	sprintf(tmp, "SOUND SET: %s", s_paths[sel_s_path]+6+strlen(ROOTDIR_PREFIX));
+	tmp[strlen(tmp)-1] = 0;
+	strupr(tmp);
+    tile_print(tmp,TILE_SIZE_X*12,TILE_SIZE_Y*13,screen,dx,dy);
+
+    if (map==0) sprintf(tmp,"CASTLE    %s%i",letter[map_x],map_y+1);
+           else sprintf(tmp,"WORLD %.2i  %s%i",map,letter[map_x],map_y+1);
+    tile_print(tmp,TILE_SIZE_X*13,TILE_SIZE_Y*16,screen,dx,dy);
+	if (MENUOPTION==3 || MENUOPTION==4) {
+		tile_print("  LEFT\\RIGHT:  CHANGE SET", TILE_SIZE_X*6, TILE_SIZE_Y*19, screen, dx, dy);
+		tile_print("  SWORD BUTTON: APPLY SET", TILE_SIZE_X*6, TILE_SIZE_Y*20, screen, dx, dy);
+	}
+
+
+    if (keyboard[SDLK_ESCAPE] && !old_keyboard[SDLK_ESCAPE]) {
+        STATE=OLDSTATE;
+        guardar_configuracion("MoG.cfg");
+    } /* if */ 
+    if (keyboard[DOWN_KEY] && !old_keyboard[DOWN_KEY] && MENUOPTION<4) MENUOPTION++;
+    if (keyboard[UP_KEY] && !old_keyboard[UP_KEY] && MENUOPTION>0) MENUOPTION--;
+
+    if (keyboard[SWORD_KEY] && !old_keyboard[SWORD_KEY] && MENUOPTION==0) {
+        Sound_release_music();
+        STATE=0;
+        SUBSTATE=0;
+        guardar_configuracion("MoG.cfg");
+    } /* if */ 
+	if (keyboard[SWORD_KEY] && !old_keyboard[SWORD_KEY] && MENUOPTION==3) {
+		SDL_Event F10;
+		F10.type = SDL_KEYDOWN;
+		F10.key.keysym.sym = SDLK_F10;
+		SDL_PushEvent(&F10);
+	} /* if */
+	if (keyboard[SWORD_KEY] && !old_keyboard[SWORD_KEY] && MENUOPTION==4) {
+		SDL_Event F11;
+		F11.type = SDL_KEYDOWN;
+		F11.key.keysym.sym = SDLK_F11;
+		SDL_PushEvent(&F11);
+	} /* if */
+
+    if (keyboard[RIGHT_KEY] && MENUOPTION==1 && music_volume<127) {
+        music_volume++;
+        Mix_VolumeMusic(music_volume);
+    } /* if */ 
+    if (keyboard[LEFT_KEY] && MENUOPTION==1 && music_volume>0) {
+        music_volume--;
+        Mix_VolumeMusic(music_volume);
+    } /* if */ 
+    if (keyboard[RIGHT_KEY] && MENUOPTION==2 && sfx_volume<127) {
+        sfx_volume++;
+        SetSFXVolume(sfx_volume);
+    } /* if */ 
+    if (keyboard[LEFT_KEY] && MENUOPTION==2 && sfx_volume>0) {
+        sfx_volume--;
+        SetSFXVolume(sfx_volume);
+    } /* if */
+	if (keyboard[RIGHT_KEY] && !old_keyboard[RIGHT_KEY] && MENUOPTION==3 &&
+			sel_g_path+1 < n_g_paths) {
+		sel_g_path++;
+	}
+	if (keyboard[LEFT_KEY] && !old_keyboard[LEFT_KEY] && MENUOPTION==3 &&
+			sel_g_path > 0) {
+		sel_g_path--;
+	}
+	if (keyboard[RIGHT_KEY] && !old_keyboard[RIGHT_KEY] && MENUOPTION==4 &&
+			sel_s_path+1 < n_s_paths) {
+		sel_s_path++;
+	}
+	if (keyboard[LEFT_KEY] && !old_keyboard[LEFT_KEY] && MENUOPTION==4 &&
+			sel_s_path > 0) {
+		sel_s_path--;
+	}
+}
+#endif
 
 #ifdef GAMEPAD_ONLY
 void DemonNameSpellScreen(BYTE *screen,int dx,int dy,unsigned char *keyboard)

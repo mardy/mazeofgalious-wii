@@ -3,11 +3,12 @@
 #include <wiiuse/wpad.h>
 
 extern SDLKey UP_KEY,DOWN_KEY,LEFT_KEY,RIGHT_KEY;
+#ifdef GAMEPAD_ONLY
+extern SDLKey JUMP_KEY;
+#endif
 extern SDLKey SWORD_KEY,WEAPON_KEY,ITEM_KEY,PAUSE_KEY;
 
 Uint8 wpad_keyboard_mapping[SDLK_LAST];
-
-bool changing_skin_or_sounds = false;
 
 void insert_rootdir_prefix(const char *path_in, char *path_out) 
 {
@@ -29,41 +30,18 @@ Uint8 *WPAD_SDL_GetKeyState(int *numkeys)
     WPAD_ScanPads();
     u32 held = WPAD_ButtonsHeld(0);
     
-    wpad_keyboard_mapping[SWORD_KEY] = ((held & WIIMOTE_BUTTON_TWO)) ? 1 : 0;
-    wpad_keyboard_mapping[WEAPON_KEY] = ((held & WIIMOTE_BUTTON_ONE)) ? 1 : 0;
     // Wiimote is placed sideways to play - therefore, the positions have to be changed
-    wpad_keyboard_mapping[LEFT_KEY] = (held & WIIMOTE_BUTTON_UP) ? 1 : 0;
-    wpad_keyboard_mapping[RIGHT_KEY] = (held & WIIMOTE_BUTTON_DOWN) ? 1 : 0;
-    wpad_keyboard_mapping[DOWN_KEY] = (held & WIIMOTE_BUTTON_LEFT) ? 1 : 0;
-    wpad_keyboard_mapping[UP_KEY] = (held & WIIMOTE_BUTTON_RIGHT) ? 1 : 0;       
-    wpad_keyboard_mapping[ITEM_KEY] = (held & WIIMOTE_BUTTON_PLUS) ? 1 : 0;    
-    wpad_keyboard_mapping[PAUSE_KEY] = (held & WIIMOTE_BUTTON_MINUS) ? 1 : 0;
+    wpad_keyboard_mapping[SWORD_KEY] =  (held & (WPAD_BUTTON_2       |  WPAD_CLASSIC_BUTTON_A       )) ? 1 : 0;
+    wpad_keyboard_mapping[WEAPON_KEY] = (held & (WPAD_BUTTON_1       |  WPAD_CLASSIC_BUTTON_Y       )) ? 1 : 0;
+    wpad_keyboard_mapping[LEFT_KEY] =   (held & (WPAD_BUTTON_UP      |  WPAD_CLASSIC_BUTTON_LEFT    )) ? 1 : 0;
+    wpad_keyboard_mapping[RIGHT_KEY] =  (held & (WPAD_BUTTON_DOWN    |  WPAD_CLASSIC_BUTTON_RIGHT   )) ? 1 : 0;
+    wpad_keyboard_mapping[DOWN_KEY] =   (held & (WPAD_BUTTON_LEFT    |  WPAD_CLASSIC_BUTTON_DOWN    )) ? 1 : 0;
+    wpad_keyboard_mapping[UP_KEY] =     (held & (WPAD_BUTTON_RIGHT   |  WPAD_CLASSIC_BUTTON_UP      )) ? 1 : 0;       
+    wpad_keyboard_mapping[ITEM_KEY] =   (held & (WPAD_BUTTON_PLUS    |  WPAD_CLASSIC_BUTTON_PLUS    )) ? 1 : 0;    
+    wpad_keyboard_mapping[PAUSE_KEY] =  (held & (WPAD_BUTTON_MINUS   |  WPAD_CLASSIC_BUTTON_MINUS   )) ? 1 : 0;
+    wpad_keyboard_mapping[JUMP_KEY] =   (held & (WPAD_BUTTON_RIGHT   |  WPAD_CLASSIC_BUTTON_B       )) ? 1 : 0;
     // ESC - options menu
-    wpad_keyboard_mapping[SDLK_ESCAPE] = (held & WIIMOTE_BUTTON_HOME) ? 1 : 0;
-    // change graphic set
-    // TODO MUDAR A LÓGICA PARA QUE USE UMA VARIÁVEL DE CONTROLE QUE NÃO 
-    // PERMITA QUE UM SEGUNDO SDL_Event SEJA COLOCADO NA FILA
-    // ( bool changingSkinOrSounds (global) ) 
-    if (held & WIIMOTE_BUTTON_A) {
-        if (!changing_skin_or_sounds) {
-            SDL_Event F10;
-            F10.type = SDL_KEYDOWN;
-            F10.key.keysym.sym = SDLK_F10;
-            SDL_PushEvent(&F10);
-            changing_skin_or_sounds = true;
-        }
-    }
-    // change sound set
-    if (held & WIIMOTE_BUTTON_B) {
-        if (!changing_skin_or_sounds) {
-            SDL_Event F11;
-            F11.type = SDL_KEYDOWN;
-            F11.key.keysym.sym = SDLK_F11;
-            SDL_PushEvent(&F11);
-            changing_skin_or_sounds = true;
-        }
-    }
-    
+    wpad_keyboard_mapping[SDLK_ESCAPE] =(held & (WPAD_BUTTON_HOME    |  WPAD_CLASSIC_BUTTON_HOME    )) ? 1 : 0;
+
     return wpad_keyboard_mapping;
 }
-   

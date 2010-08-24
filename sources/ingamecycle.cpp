@@ -132,6 +132,9 @@ extern int zoom;
 
 /* Teclas: */ 
 extern SDLKey UP_KEY,DOWN_KEY,LEFT_KEY,RIGHT_KEY;
+#ifdef GAMEPAD_ONLY
+extern SDLKey JUMP_KEY;
+#endif
 extern SDLKey SWORD_KEY,WEAPON_KEY,ITEM_KEY,PAUSE_KEY;
 
 
@@ -743,7 +746,13 @@ void GameInGameCycle(int dx,int dy)
 						pers_right=true;
 					} /* if */ 
 				} /* if */ 
-				if (keyboard[UP_KEY] && !old_keyboard[UP_KEY] && !escalera_up && !in_lava) {
+				if (
+#ifdef GAMEPAD_ONLY
+					(keyboard[JUMP_KEY] && !old_keyboard[JUMP_KEY])
+#else
+					(keyboard[UP_KEY] && !old_keyboard[UP_KEY])
+#endif
+				     	&& !escalera_up && !in_lava) {
 					pers_state=S_JUMPING;
 					if (character_over_vertical_lever) jumping_from_elevator=true;
 					pers_substate=0;
@@ -817,7 +826,13 @@ void GameInGameCycle(int dx,int dy)
 					if (!keyboard[LEFT_KEY]) pers_state=S_QUIET;
 										else pers_state=S_WALKING_LEFT;
 				} /* if */ 
-				if (keyboard[UP_KEY] && !old_keyboard[UP_KEY] && !escalera_up && !in_lava) {
+				if (
+#ifdef GAMEPAD_ONLY
+					(keyboard[JUMP_KEY] && !old_keyboard[JUMP_KEY])
+#else
+					(keyboard[UP_KEY] && !old_keyboard[UP_KEY])
+#endif
+				     	&& !escalera_up && !in_lava) {
 					Sound_play(S_jump);
 					pers_state=S_JUMPING;
 					if (character_over_vertical_lever) jumping_from_elevator=true;
@@ -890,7 +905,13 @@ void GameInGameCycle(int dx,int dy)
 					if (!keyboard[RIGHT_KEY]) pers_state=S_QUIET;
 						 			     else pers_state=S_WALKING_RIGHT;
 				} /* if */ 
-				if (keyboard[UP_KEY] && !old_keyboard[UP_KEY] && !escalera_up && !in_lava) {
+				if (
+#ifdef GAMEPAD_ONLY
+					(keyboard[JUMP_KEY] && !old_keyboard[JUMP_KEY])
+#else
+					(keyboard[UP_KEY] && !old_keyboard[UP_KEY])
+#endif
+				     	&& !escalera_up && !in_lava) {
 					Sound_play(S_jump);
 					pers_state=S_JUMPING;
 					if (character_over_vertical_lever) jumping_from_elevator=true;
@@ -1101,7 +1122,13 @@ void GameInGameCycle(int dx,int dy)
 				pers_pos=2;
 				if (!previous_y_collision) {
 					if (character==0) {
-						if (!keyboard[UP_KEY] && pers_substate<11) pers_substate=11;
+						if (
+#ifdef GAMEPAD_ONLY
+								!keyboard[JUMP_KEY] &&
+#else
+								!keyboard[UP_KEY] &&
+#endif
+								pers_substate<11) pers_substate=11;
 						if (in_water) {
 							if (pers_substate== 0) next_y=pers_y-TILE_UNIT*2;
 							if (pers_substate== 1) next_y=pers_y-(TILE_UNIT/2)*3;
@@ -1238,7 +1265,13 @@ void GameInGameCycle(int dx,int dy)
 		case S_STOPPED_JUMPING:
 				pers_pos=2;
 				if (character==0) 
-					if (!keyboard[UP_KEY] && pers_substate<11) pers_substate=11;
+					if (
+#ifdef GAMEPAD_ONLY
+							!keyboard[JUMP_KEY] &&
+#else
+							!keyboard[UP_KEY] &&
+#endif
+							pers_substate<11) pers_substate=11;
 				if (character==1) 
 					if (pers_substate==8) pers_substate=11;
 
@@ -1486,7 +1519,13 @@ void GameInGameCycle(int dx,int dy)
 				} /* if */ 
 
 				if (character==0) {
-					if (!keyboard[UP_KEY] && pers_substate<11) pers_substate=11;
+					if (
+#ifdef GAMEPAD_ONLY
+							!keyboard[JUMP_KEY] &&
+#else
+							!keyboard[UP_KEY] &&
+#endif
+							pers_substate<11) pers_substate=11;
 					if (in_water) {
 						if (pers_substate== 0) next_y=pers_y-(TILE_UNIT/2)*4;
 						if (pers_substate== 1) next_y=pers_y-(TILE_UNIT/2)*3;
@@ -1598,7 +1637,13 @@ void GameInGameCycle(int dx,int dy)
 				} /* if */ 
 
 				if (character==0) 
-					if (!keyboard[UP_KEY] && pers_substate<11) pers_substate=11;
+					if (
+#ifdef GAMEPAD_ONLY
+							!keyboard[JUMP_KEY] &&
+#else
+							!keyboard[UP_KEY] &&
+#endif
+							pers_substate<11) pers_substate=11;
 				if (character==1) 
 					if (pers_substate==8) pers_substate=11;
 

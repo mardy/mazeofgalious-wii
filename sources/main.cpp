@@ -60,14 +60,14 @@ char **s_paths = 0;
 int n_s_paths = 0, act_s_path = 0;
 //char *s_path = 0;
 char *s_path = default_s_path;
+#ifdef GAMEPAD_ONLY
+int sel_g_path = act_g_path;
+int sel_s_path = act_s_path;
+#endif
 
 extern int music_volume, sfx_volume;
 extern int fighting_demon;
 extern BYTE* buffer_screen;
-
-#ifdef _WII
-extern bool changing_skin_or_sounds;
-#endif
 
 void pause(unsigned int time)
 {
@@ -233,7 +233,11 @@ FIXME: the code below is a big copy/paste; it should be in a separate function i
                         Render(screen,false);
                         SDL_Flip(screen); 
                         
+#ifndef GAMEPAD_ONLY
 						act_g_path++;
+#else
+						act_g_path = sel_g_path;
+#endif
 						if (act_g_path >= n_g_paths) {
 							act_g_path = 0;
 						}
@@ -246,9 +250,6 @@ FIXME: the code below is a big copy/paste; it should be in a separate function i
 						if (fighting_demon != 0) {
 							redo_demonintro(fighting_demon, 0, SCREEN_X, SCREEN_Y);
 						}
-#ifdef _WII
-                        changing_skin_or_sounds=false;
-#endif
 					} 
 
 					// Change sound set with either F11 or 0 (F10 is already used in OSX)
@@ -256,8 +257,12 @@ FIXME: the code below is a big copy/paste; it should be in a separate function i
                         tile_print("PLEASE WAIT",TILE_SIZE_X*15,TILE_SIZE_Y*12,buffer_screen,SCREEN_X,SCREEN_Y);
                         Render(screen,false);
                         SDL_Flip(screen);
-                        
+
+#ifndef GAMEPAD_ONLY
 						act_s_path++;
+#else
+						act_s_path = sel_s_path;
+#endif
 						if (act_s_path >= n_s_paths) {
 							act_s_path = 0;
 						}
@@ -269,9 +274,6 @@ FIXME: the code below is a big copy/paste; it should be in a separate function i
 						guardar_configuracion("MoG.cfg");
 						Mix_VolumeMusic(music_volume);
 						SetSFXVolume(sfx_volume);
-#ifdef _WII
-                        changing_skin_or_sounds=false;
-#endif
 					}
 
 					if (event.key.keysym.sym == SDLK_d) {
