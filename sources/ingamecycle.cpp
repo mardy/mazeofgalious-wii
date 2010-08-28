@@ -133,12 +133,33 @@ extern int zoom;
 /* Teclas: */ 
 extern SDLKey UP_KEY,DOWN_KEY,LEFT_KEY,RIGHT_KEY;
 #ifdef GAMEPAD_ONLY
-extern SDLKey JUMP_KEY;
+extern SDLKey JUMP_KEY, CHANGE_WEAPON_L_KEY, CHANGE_WEAPON_R_KEY;
 #endif
 extern SDLKey SWORD_KEY,WEAPON_KEY,ITEM_KEY,PAUSE_KEY;
 
 
-
+#ifdef GAMEPAD_ONLY
+/**
+ * Changes current weapon "leftwise" (-1) or "rightwise" (1).
+ * Classic controller changes them automatically, in-game (a Wii exclusive feature)
+ */
+void ChangeCurrentWeapon(int direction)
+{
+    int temp = current_weapon;    
+    for (int i = 0; i < 5; i++) {
+        temp += direction;
+        if (temp < 0) {
+            temp = 5;
+        } else if (temp > 5) {
+            temp = 0;
+        }
+        if (item[32+temp]) {
+            current_weapon = temp;
+            break;
+        }
+    }    
+}
+#endif
 
 void GameInGameCycle(int dx,int dy)
 {
@@ -693,7 +714,14 @@ void GameInGameCycle(int dx,int dy)
 			lava_counter=0;
 		} /* if */ 
 	} /* if */ 
-
+    
+#ifdef GAMEPAD_ONLY
+    if (keyboard[CHANGE_WEAPON_L_KEY] && !old_keyboard[CHANGE_WEAPON_L_KEY]) {
+        ChangeCurrentWeapon(-1);
+    } else if (keyboard[CHANGE_WEAPON_R_KEY] && !old_keyboard[CHANGE_WEAPON_R_KEY]) {
+        ChangeCurrentWeapon(1);
+    }
+#endif
 
 	if (item[19] &&
 		((keyboard[SDLK_LCTRL] && !old_keyboard[SDLK_LCTRL]) ||
@@ -750,9 +778,9 @@ void GameInGameCycle(int dx,int dy)
 #ifdef GAMEPAD_ONLY
 					(keyboard[JUMP_KEY] && !old_keyboard[JUMP_KEY])
 #else
-					(keyboard[UP_KEY] && !old_keyboard[UP_KEY])
+					(keyboard[UP_KEY] && !old_keyboard[UP_KEY]) && !escalera_up
 #endif
-				     	&& !escalera_up && !in_lava) {
+				     	 && !in_lava) {
 					pers_state=S_JUMPING;
 					if (character_over_vertical_lever) jumping_from_elevator=true;
 					pers_substate=0;
@@ -830,9 +858,9 @@ void GameInGameCycle(int dx,int dy)
 #ifdef GAMEPAD_ONLY
 					(keyboard[JUMP_KEY] && !old_keyboard[JUMP_KEY])
 #else
-					(keyboard[UP_KEY] && !old_keyboard[UP_KEY])
+					(keyboard[UP_KEY] && !old_keyboard[UP_KEY]) && !escalera_up
 #endif
-				     	&& !escalera_up && !in_lava) {
+				     	 && !in_lava) {
 					Sound_play(S_jump);
 					pers_state=S_JUMPING;
 					if (character_over_vertical_lever) jumping_from_elevator=true;
@@ -909,9 +937,9 @@ void GameInGameCycle(int dx,int dy)
 #ifdef GAMEPAD_ONLY
 					(keyboard[JUMP_KEY] && !old_keyboard[JUMP_KEY])
 #else
-					(keyboard[UP_KEY] && !old_keyboard[UP_KEY])
+					(keyboard[UP_KEY] && !old_keyboard[UP_KEY]) && !escalera_up
 #endif
-				     	&& !escalera_up && !in_lava) {
+				     	 && !in_lava) {
 					Sound_play(S_jump);
 					pers_state=S_JUMPING;
 					if (character_over_vertical_lever) jumping_from_elevator=true;

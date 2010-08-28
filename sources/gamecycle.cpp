@@ -327,7 +327,11 @@ int zoom=640;
 /* Teclas: */ 
 SDLKey UP_KEY=SDLK_q,DOWN_KEY=SDLK_a,LEFT_KEY=SDLK_o,RIGHT_KEY=SDLK_p;
 #ifdef GAMEPAD_ONLY
-SDLKey JUMP_KEY=SDLK_z;
+// This "weird" keyboard mapping is for gamepad controls. 
+// Its purpose is to avoid conflicts between typed words and buttons used in-game.
+SDLKey JUMP_KEY=SDLK_F3;
+SDLKey CHANGE_WEAPON_L_KEY=SDLK_F4;
+SDLKey CHANGE_WEAPON_R_KEY=SDLK_F5;
 #endif
 SDLKey SWORD_KEY=SDLK_SPACE,WEAPON_KEY=SDLK_m,ITEM_KEY=SDLK_F1,PAUSE_KEY=SDLK_F2;
 SDLKey last_word[16];
