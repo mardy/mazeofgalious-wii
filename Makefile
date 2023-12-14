@@ -39,7 +39,7 @@ LDFLAGS	=	-g $(MACHDEP) -Wl,-Map,$(notdir $@).map
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project
 #---------------------------------------------------------------------------------
-LIBS	:=	-lSDL_ttf -lSDL_gfx -lSDL_mixer -lsmpeg -lSDL_image -ljpeg -lpng -lz -lSDL -lSDL_net -lfreetype -lvorbisidec -lfat -lwiiuse -lwiikeyboard -lbte -logc -lm 
+LIBS	:=	-lSDL_ttf -lSDL_gfx -lSDL_mixer -lSDL_image -lmad -lmodplug -lvorbisfile -lvorbis -logg -ljpeg -lpng -lz -lSDL -lSDLmain -laesnd -lfreetype -lfat -lwiiuse -lwiikeyboard -lbte -logc -lm -logc
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
@@ -94,6 +94,7 @@ export OFILES	:=	$(addsuffix .o,$(BINFILES)) \
 export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 					$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
 					-I$(CURDIR)/$(BUILD) \
+					-I$(DEVKITPRO)/portlibs/wii/include/SDL \
 					-I$(LIBOGC_INC) -I$(LIBOGC_INC)/SDL
 
 #---------------------------------------------------------------------------------
